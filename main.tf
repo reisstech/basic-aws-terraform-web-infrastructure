@@ -58,13 +58,13 @@ resource "aws_subnet" "webserver_subnet2" {
 # KEY PAIR
 
 resource "aws_key_pair" "web_server_key_pair" {
-  key_name   = "wordpress_key_pair"
-  public_key = file("wordpress_key_pair.pub")
+  key_name   = "webservers_key_pair"
+  public_key = file("webservers_key_pair.pub")
 }
 
-resource "aws_security_group" "wordpress_sg" {
-    name = "wordpress_sg"
-    description = "Allow web traffic to Wordpress servers"
+resource "aws_security_group" "webservers_sg" {
+    name = "webservers_sg"
+    description = "Allow web traffic to webservers servers"
     vpc_id = aws_vpc.prod.id
 
     ingress {
@@ -93,7 +93,7 @@ resource "aws_security_group" "wordpress_sg" {
     }
 
     tags = {
-        Name = "wordpress_security_group"
+        Name = "webservers_security_group"
     }
 
 }
@@ -106,7 +106,7 @@ resource "aws_instance" "web_server_instance1" {
   instance_type = "t2.micro"
   key_name      = aws_key_pair.web_server_key_pair.key_name
   subnet_id     = aws_subnet.webserver_subnet1.id
-  vpc_security_group_ids = [aws_security_group.wordpress_sg.id]
+  vpc_security_group_ids = [aws_security_group.webservers_sg.id]
   user_data = "${file("script01.sh")}"
 
   tags = {
@@ -119,7 +119,7 @@ resource "aws_instance" "web_server_instance2" {
   instance_type = "t2.micro"
   key_name      = aws_key_pair.web_server_key_pair.key_name
   subnet_id     = aws_subnet.webserver_subnet2.id
-  vpc_security_group_ids = [aws_security_group.wordpress_sg.id]
+  vpc_security_group_ids = [aws_security_group.webservers_sg.id]
   user_data = "${file("script02.sh")}"
 
   tags = {
